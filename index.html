@@ -1,168 +1,154 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MBTI文学的診断 - NF編</title>
-  <style>
-    body {
-      font-family: 'Hiragino Sans', 'Helvetica Neue', sans-serif;
-      background: #f9f8f7;
-      color: #222;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 720px;
-      margin: 40px auto;
-      background: white;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    h1 {
-      text-align: center;
-      color: #3b3b3b;
-      font-size: 1.6em;
-      margin-bottom: 15px;
-    }
-    p {
-      text-align: center;
-      color: #555;
-      line-height: 1.6;
-    }
-    .question {
-      font-weight: 600;
-      font-size: 1.1em;
-      margin: 25px 0 15px 0;
-      text-align: center;
-    }
-    button {
-      display: block;
-      width: 90%;
-      margin: 10px auto;
-      background: linear-gradient(135deg, #8a70d6, #b28de9);
-      color: white;
-      border: none;
-      padding: 16px;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: all 0.25s ease;
-    }
-    button:hover {
-      transform: scale(1.03);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-    }
-    button:active {
-      transform: scale(0.97);
-      background: linear-gradient(135deg, #7a63c0, #a37cd7);
-    }
-    .result {
-      margin-top: 30px;
-      background: #f2eefb;
-      padding: 20px;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      font-size: 15px;
-      line-height: 1.7;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBTI文学的診断</title>
+<style>
+body {
+  font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  background: #f7f7f9;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 850px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+h1 {
+  text-align: center;
+  color: #333;
+}
+button {
+  display: block;
+  margin: 15px auto;
+  padding: 15px 30px;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  background: #007aff;
+  color: white;
+  cursor: pointer;
+}
+button:hover { background: #005fcc; }
+.result {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-size: 17px;
+  color: #222;
+  margin-top: 25px;
+}
+.warning {
+  background: #fff6f6;
+  color: #a10000;
+  border-left: 4px solid #ff6b6b;
+  padding: 10px 15px;
+  margin-top: 20px;
+  border-radius: 6px;
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎭 MBTI文学的診断（NFタイプ）</h1>
-    <p>あなたの心の物語を読み解きます。質問に答えてください。</p>
+<div class="container">
+  <h1>🎭 MBTI文学的診断</h1>
+  <p>あなたの“理想の人格（ペルソナ）”を文学的に描写します。<br>
+     ※剥離度に応じて警告文が追加されます。</p>
 
-    <div id="quiz">
-      <div id="question" class="question"></div>
-      <div id="options"></div>
-    </div>
+  <button onclick="showResult('NF', 15)">NFタイプ</button>
+  <button onclick="showResult('NP', 55)">NPタイプ</button>
+  <button onclick="showResult('NJ', 75)">NJタイプ</button>
+  <button onclick="showResult('SP', 70)">SPタイプ</button>
+  <button onclick="showResult('SJ', 85)">SJタイプ</button>
 
-    <div id="result" class="result" style="display:none;"></div>
-  </div>
+  <div id="result" class="result"></div>
+</div>
 
-  <script>
-    const questions = [
-      "1. あなたは理想を現実よりも大切にする？",
-      "2. 誰かの痛みに共鳴しすぎて疲れることがある？",
-      "3. 自分の感情をうまく言葉にできないときがある？",
-      "4. 世界がもっと優しくあってほしいと思う？",
-      "5. 他人を救おうとして、自分が壊れそうになることがある？"
-    ];
+<script>
+const texts = {
+  "NF": `🌌 夢の観測者（NFタイプ）
 
-    const answers = [
-      { text: "まったくそう思わない", value: 1 },
-      { text: "あまりそう思わない", value: 2 },
-      { text: "どちらともいえない", value: 3 },
-      { text: "少しそう思う", value: 4 },
-      { text: "とてもそう思う", value: 5 }
-    ];
+あなたは魂の詩人。世界の痛みを美に変える。
+理想を追うことが生きることそのものだと信じている。
+他者の心に触れすぎて、自分の輪郭を見失うこともある。
+愛はあなたの言語、孤独はその翻訳者だ。
+夜空を見上げるたび、まだ見ぬ未来を探してしまう。
 
-    let current = 0;
-    let score = 0;
+——あなたの共感は呪いであり、祝福でもある。
+世界を癒す力を持ちながら、しばしば自分を救えない詩人。`,
 
-    function showQuestion() {
-      const q = document.getElementById("question");
-      const o = document.getElementById("options");
-      if (current < questions.length) {
-        q.textContent = questions[current];
-        o.innerHTML = "";
-        answers.forEach(a => {
-          const btn = document.createElement("button");
-          btn.textContent = a.text;
-          btn.onclick = () => { score += a.value; current++; showQuestion(); };
-          o.appendChild(btn);
-        });
-      } else showResult();
+  "NP": `🌪 逆説の旅人（NPタイプ）
+
+あなたは不確定性の魔術師。世界のルールを玩具にする。
+誰も考えない道を歩き、笑いながら常識を裏返す。
+退屈に耐えられず、いつも“次”を探してしまう。
+けれど、変化の先に何か残せたかと問われると、言葉が止まる。
+
+——あなたの混沌は創造そのものだ。
+だが、思考の火花が心の灯を焼き尽くす前に、少し休んでもいい。`,
+
+  "NJ": `🕯 静寂の設計者（NJタイプ）
+
+あなたは未来を構築する孤独な建築家。
+全ての出来事を線で結び、静かに意味を読み取る。
+理想を描きながらも、現実に触れるたび心が軋む。
+完璧を求めるがゆえに、不完全な自分を許せない。
+
+——あなたの洞察は鋭すぎて、時に世界より冷たい。
+けれど、その冷たさが形を与え、秩序を生む。`,
+
+  "SP": `🎶 衝動の踊り子（SPタイプ）
+
+あなたは観客のいない舞台で踊り続ける。
+退屈を恐れ、自由を呼吸し、今を燃やすように生きる。
+人の笑顔があなたの酸素。だが、時々息が詰まる夜がある。
+その輝きは刹那的だが、確かに永遠。
+
+——止まる勇気を、時には持ってもいい。`,
+
+  "SJ": `🕰 秩序の守護者（SJタイプ）
+
+あなたは世界を支える静かな歯車。
+誰も見ていなくても、壊れた仕組みを直す。
+義務と誠実を生き、責任とともに摩耗していく。
+けれどその静かな努力が、誰かの明日を守っている。
+
+——完璧さよりも、温かさを忘れないでほしい。`
+};
+
+function showResult(type, divergence) {
+  let result = `${texts[type]}\n\n【剥離度】${divergence}%`;
+  let warning = "";
+
+  // 🩸 SP専用警告（4段階）
+  if (type === "SP") {
+    if (divergence >= 80) {
+      warning = "※重大: 演じていることを自覚しているなら、それはもう限界に近いです。";
+    } else if (divergence >= 60) {
+      warning = "※警告: 明るさと無気力の反動が大きくなっています。休憩を予定に入れてください。";
+    } else if (divergence >= 40) {
+      warning = "※注意: 盛り上げ役を自動で引き受けない日をつくりましょう。";
+    } else {
+      warning = "※観察: あなたの軽さは機能しています。ときどき本音を出すだけで十分です。";
     }
-
-    function showResult() {
-      document.getElementById("quiz").style.display = "none";
-      const result = document.getElementById("result");
-      result.style.display = "block";
-      const avg = score / questions.length;
-      let title, color, text;
-
-      if (avg < 2.5) {
-        title = "冷えた夢想家（現実型NF）";
-        color = "#dfe3f0";
-        text = `
-あなたは理想を愛しながらも、現実を裏切らない冷静な観察者。
-世界の痛みを他人事にできず、それでも自分を守る術を知っている。
-夢は見ないわけではない。語るのが少し恥ずかしいだけ。
-あなたは静かに現実を受け入れる詩人です。`;
-      } else if (avg < 3.5) {
-        title = "迷う理想主義者（揺れるNF）";
-        color = "#e8d7f7";
-        text = `
-「優しさ」と「現実」の狭間で立ち尽くすあなた。
-他人の苦しみを感じすぎて、自分の声がかき消える。
-理想は尊いが、時にあなたを蝕む。
-それでもあなたは信じる。まだ、愛が通じる世界を。`;
-      } else if (avg < 4.5) {
-        title = "夢に生きる献身者（理想過多NF）";
-        color = "#d1b0f2";
-        text = `
-あなたは世界を救いたいと願う。たった一人で。
-愛されるより、理解されたい。
-その優しさがあなたを詩にし、同時に孤独にする。`;
-      } else {
-        title = "自己幻想の殉教者（救えないNF）";
-        color = "#b47ab1";
-        text = `
-あなたは理想の亡霊を追っている。
-現実を憎み、愛を神格化する。
-美しい。だが、痛いほど脆い。
-このままでは、世界はあなたを優しさで殺すだろう。`;
-      }
-
-      result.style.background = color;
-      result.innerHTML = `<h2>${title}</h2><p>${text}</p>`;
+  }
+  // 🩶 他タイプ共通警告（3段階）
+  else {
+    if (divergence >= 80) {
+      warning = "あなたは理想に囚われ、現実を拒絶しつつあります。少し立ち止まって、呼吸を整えましょう。";
+    } else if (divergence >= 50) {
+      warning = "理想と現実の間に揺れています。どちらかを選ぶ必要はありません。静かに重なる点を探しましょう。";
+    } else if (divergence >= 20) {
+      warning = "わずかなズレを感じています。今のペースで、自分の声を聞き続けてください。";
     }
+  }
 
-    showQuestion();
-  </script>
+  if (warning) result += `\n\n<div class="warning">⚠️ ${warning}</div>`;
+  document.getElementById("result").innerHTML = result;
+}
+</script>
 </body>
 </html>
