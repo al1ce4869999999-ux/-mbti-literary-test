@@ -1,1 +1,125 @@
 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI文学診断 - 統計表示</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      background: #f7f7f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+    canvas {
+      margin: 30px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>📈 MBTI文学診断 - 全体統計</h1>
+  <p>このページでは、匿名で送信された診断結果をもとに全体傾向を可視化します。</p>
+
+  <canvas id="avgChart" width="400" height="200"></canvas>
+  <canvas id="typeChart" width="400" height="200"></canvas>
+
+  <div id="summary"></div>
+</div>
+
+<script>
+  // Firebase設定（storage.jsと同じ値に）
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "yourapp.firebaseapp.com",
+    databaseURL: "https://yourapp.firebaseio.com",
+    projectId: "yourapp",
+    storageBucket: "yourapp.appspot.com",
+    messagingSenderId: "000000000000",
+    appId: "1:000000000000:web:000000000000"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  async function loadData() {
+    const snapshot = await db.collection("results").get();
+    const data = snapshot.docs.map(doc => doc.data());
+
+    const ideal = data.map(d => parseFloat(d.ideal_gap || d.理想剥離度));
+    const fantasy = data.map(d => parseFloat(d.fantasy_gap || d.空想剥離度));
+    const types = data.map(d => d.type || d.タイプ);
+
+    // 平均値
+    const avgIdeal = ideal.reduce((a,b)=>a+b,0)/ideal.length;
+    const avgFantasy = fantasy.reduce((a,b)=>a+b,0)/fantasy.length;
+
+    // 出現頻度
+    const typeCount = {};
+    for (const t of types) {
+      if (!typeCount[t]) typeCount[t] = 0;
+      typeCount[t]++;
+    }
+
+    renderCharts(avgIdeal, avgFantasy, typeCount);
+  }
+
+  function renderCharts(avgIdeal, avgFantasy, typeCount) {
+    // 平均グラフ
+    new Chart(document.getElementById('avgChart'), {
+      type: 'bar',
+      data: {
+        labels: ['理想剥離', '空想剥離'],
+        datasets: [{
+          label: '平均スコア（%）',
+          data: [avgIdeal.toFixed(1), avgFantasy.toFixed(1)],
+          backgroundColor: ['#007aff', '#ff6b6b']
+        }]
+      },
+      options: {
+        scales: { y: { beginAtZero: true, max: 100 } }
+      }
+    });
+
+    // タイプ分布
+    new Chart(document.getElementById('typeChart'), {
+      type: 'pie',
+      data: {
+        labels: Object.keys(typeCount),
+        datasets: [{
+          label: 'タイプ分布',
+          data: Object.values(typeCount),
+          backgroundColor: ['#ffb347','#77dd77','#779ecb','#f49ac2','#cbaacb']
+        }]
+      }
+    });
+
+    // テキストまとめ
+    document.getElementById("summary").innerHTML = `
+      <h3>分析まとめ</h3>
+      <p>全体平均 理想剥離：${avgIdeal.toFixed(1)}%　空想剥離：${avgFantasy.toFixed(1)}%</p>
+      <p>最も多いタイプ：${Object.keys(typeCount).reduce((a,b)=>typeCount[a]>typeCount[b]?a:b)}</p>
+    `;
+  }
+
+  loadData();
+</script>
+</body>
+</html>
