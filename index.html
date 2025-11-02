@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBTI文学的診断（簡易版）</title>
+<style>
+body {
+  font-family: "Hiragino Sans", "Helvetica Neue", sans-serif;
+  background: #f5f7fa;
+  padding: 20px;
+  color: #333;
+}
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 30px;
+}
+button {
+  background: #007AFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+button:hover { background: #005BBB; }
+.question {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+.scale-button {
+  background: #f0f2f5;
+  border: 1px solid #ccc;
+  padding: 10px 14px;
+  margin: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.scale-button:hover { background: #dbeafe; }
+.result {
+  background: #f8fafc;
+  border-left: 5px solid #007AFF;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎭 MBTI文学的診断（簡易版）</h1>
+  <p>10の質問に答えて、あなたの内面を文学的に分析します。</p>
+  <div id="quiz"></div>
+  <div id="result" class="result" style="display:none;"></div>
+</div>
+
+<script>
+const questions = [
+  "新しい場所では、まず周囲の詳細を五感で把握する",
+  "過去の経験が、無意識に現在の判断に影響する",
+  "目の前の状況から多様な未来を想像する",
+  "物事の本質を直感的に見抜くことがある",
+  "効率や生産性を重視して判断する",
+  "内面的な一貫性を最も大事にしている",
+  "他人の感情を察して行動することが多い",
+  "自分の信念や価値観を貫こうとする",
+  "断片的な情報から全体像を導くのが得意",
+  "現実的な事実やデータを重視して考える"
+];
+
+let current = 0;
+let scores = 0;
+
+function showQuestion() {
+  if (current >= questions.length) {
+    showResult();
+    return;
+  }
+  const q = questions[current];
+  document.getElementById("quiz").innerHTML = `
+    <div class="question">Q${current+1}. ${q}</div>
+    <div>
+      <button class="scale-button" onclick="answer(1)">1 全く当てはまらない</button>
+      <button class="scale-button" onclick="answer(2)">2 あまり当てはまらない</button>
+      <button class="scale-button" onclick="answer(3)">3 どちらともいえない</button>
+      <button class="scale-button" onclick="answer(4)">4 やや当てはまる</button>
+      <button class="scale-button" onclick="answer(5)">5 非常に当てはまる</button>
+    </div>
+  `;
+}
+
+function answer(value) {
+  scores += value;
+  current++;
+  showQuestion();
+}
+
+function showResult() {
+  document.getElementById("quiz").style.display = "none";
+  const divergence = Math.abs(50 - (scores / (questions.length * 5) * 100)).toFixed(1);
+  
+  let mbti = "";
+  if (scores < 25) mbti = "INFP";
+  else if (scores < 35) mbti = "ISFJ";
+  else if (scores < 45) mbti = "ENTP";
+  else mbti = "ENTJ";
+
+  let resultText = "";
+  if (mbti === "INFP") {
+    resultText = `あなたは夢を見続ける者。理想と現実の狭間に揺れながらも、心の灯を消さない。\n
+あなたの優しさは時に痛みを呼び、現実との距離を広げる。\n
+しかしその純粋さこそが、世界にまだ希望があると信じさせる。`;
+  } else if (mbti === "ENTJ") {
+    resultText = `あなたは秩序と支配を愛する者。目的のためならば冷徹さも辞さない。\n
+だが完璧を求めるあまり、他人の人間らしさを見落とすことがある。\n
+それでも世界はあなたのような人を必要としている。`;
+  } else if (mbti === "ISFJ") {
+    resultText = `あなたは静かに世界を支える影の守護者。\n
+混沌を嫌い、秩序を愛し、他人の平穏のために自己犠牲を選ぶ。\n
+あなたの優しさは時に報われないが、それでもあなたは続けるだろう。`;
+  } else {
+    resultText = `あなたは観察者であり革命家。可能性に手を伸ばし、退屈を最も恐れる。\n
+矛盾を笑い、常識を裏切る者として、あなたは世界を揺さぶるだろう。`;
+  }
+
+  document.getElementById("result").style.display = "block";
+  document.getElementById("result").innerHTML = 
+    `📘 あなたの診断結果: <b>${mbti}</b><br>剥離度: ${divergence}%<br><br>${resultText}`;
+}
+
+showQuestion();
+</script>
+</body>
+</html>
