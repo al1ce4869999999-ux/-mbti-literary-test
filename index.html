@@ -119,12 +119,10 @@ const texts = {
 ——完璧さよりも、温かさを忘れないでほしい。`
 };
 
-// 結果表示＋自動保存
 function showResult(type, idealGap, fantasyGap) {
   let result = `${texts[type]}\n\n【理想剥離】${idealGap}%　【空想剥離】${fantasyGap}%`;
   let warning = "";
 
-  // 警告分岐
   if (type === "SP") {
     if (idealGap >= 80 || fantasyGap >= 80) {
       warning = "※重大: 演じていることを自覚しているなら、それはもう限界に近いです。";
@@ -148,11 +146,9 @@ function showResult(type, idealGap, fantasyGap) {
   if (warning) result += `\n\n<div class="warning">⚠️ ${warning}</div>`;
   document.getElementById("result").innerHTML = result;
 
-  // ✅ 自動で履歴保存
   saveResult(type, idealGap, fantasyGap);
 }
 
-// 履歴保存
 function saveResult(type, idealGap, fantasyGap) {
   const record = {
     date: new Date().toLocaleDateString('ja-JP'),
