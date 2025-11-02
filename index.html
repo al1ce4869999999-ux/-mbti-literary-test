@@ -1,153 +1,161 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-    <title>MBTI文学的診断</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #f7f9fc;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        p {
-            text-align: center;
-            color: #555;
-        }
-        .question {
-            font-size: 20px;
-            font-weight: 500;
-            margin: 25px 0 15px 0;
-            line-height: 1.6;
-        }
-        .option {
-            display: block;
-            width: 100%;
-            margin: 12px 0;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            cursor: pointer;
-            background: #e3f2fd;
-            transition: background 0.2s, transform 0.1s;
-        }
-        .option:hover {
-            background: #bbdefb;
-            transform: scale(1.02);
-        }
-        .result {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f0f4f8;
-            border-radius: 10px;
-            white-space: pre-wrap;
-            font-size: 17px;
-        }
-        button {
-            background: #007AFF;
-            color: white;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-            margin: 20px 0;
-            width: 100%;
-        }
-        button:hover {
-            background: #005ecc;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI文学的診断 - NF編</title>
+  <style>
+    body {
+      font-family: 'Hiragino Sans', 'Helvetica Neue', sans-serif;
+      background: #f9f8f7;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 720px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #444;
+    }
+    button {
+      display: block;
+      width: 100%;
+      background: #6b5b95;
+      color: white;
+      border: none;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #57487a;
+    }
+    .question {
+      font-weight: 500;
+      margin-top: 25px;
+    }
+    .result {
+      margin-top: 30px;
+      background: #f1eef6;
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎭 MBTI文学的診断</h1>
-        <p>あなたの性格タイプを5つの質問で分析します</p>
-        <div id="quiz"></div>
-        <div id="result" class="result"></div>
+  <div class="container">
+    <h1>🎭 MBTI文学的診断（NFタイプ）</h1>
+    <p>あなたの心の物語を読み解きます。質問に答えてください。</p>
+
+    <div id="quiz">
+      <div id="question" class="question"></div>
+      <div id="options"></div>
     </div>
 
-    <script>
-        const questions = [
-            {
-                q: "あなたは新しい環境に入るとき、まずどのように行動しますか？",
-                options: ["周囲の雰囲気を感じ取る", "ルールを確認する", "とりあえず動いて慣れる", "全体像を俯瞰して考える"]
-            },
-            {
-                q: "他人からどう見られるかを気にしますか？",
-                options: ["常に気になる", "時々気になる", "ほとんど気にしない", "まったく気にしない"]
-            },
-            {
-                q: "決断をするとき、どのように考えますか？",
-                options: ["感情に従う", "論理的に分析する", "直感で決める", "周囲と相談して決める"]
-            },
-            {
-                q: "あなたにとって理想の一日は？",
-                options: ["何かを達成する日", "人とつながる日", "ゆったり過ごす日", "新しいことを発見する日"]
-            },
-            {
-                q: "計画と自由、どちらを優先しますか？",
-                options: ["計画", "だいたい計画", "自由", "完全に自由"]
-            }
-        ];
+    <div id="result" class="result" style="display:none;"></div>
+  </div>
 
-        let current = 0;
-        let score = 0;
+  <script>
+    const questions = [
+      "1. あなたは理想を現実よりも大切にする？",
+      "2. 誰かの痛みに共鳴しすぎて疲れることがある？",
+      "3. 自分の感情をうまく言葉にできないときがある？",
+      "4. 世界がもっと優しくあってほしいと思う？",
+      "5. 他人を救おうとして、自分が壊れそうになることがある？"
+    ];
 
-        function showQuestion() {
-            const quiz = document.getElementById('quiz');
-            if (current >= questions.length) {
-                showResult();
-                return;
-            }
-            const q = questions[current];
-            quiz.innerHTML = `
-                <div class="question">${q.q}</div>
-                ${q.options.map((opt, i) => `<button class="option" onclick="nextQuestion(${i})">${opt}</button>`).join("")}
-            `;
-        }
+    let current = 0;
+    let score = 0;
 
-        function nextQuestion(choice) {
-            score += choice;
+    const answers = [
+      { text: "まったくそう思わない", value: 1 },
+      { text: "あまりそう思わない", value: 2 },
+      { text: "どちらともいえない", value: 3 },
+      { text: "少しそう思う", value: 4 },
+      { text: "とてもそう思う", value: 5 }
+    ];
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const resultEl = document.getElementById("result");
+
+    function showQuestion() {
+      if (current < questions.length) {
+        questionEl.textContent = questions[current];
+        optionsEl.innerHTML = "";
+        answers.forEach(a => {
+          const btn = document.createElement("button");
+          btn.textContent = a.text;
+          btn.onclick = () => {
+            score += a.value;
             current++;
             showQuestion();
-        }
+          };
+          optionsEl.appendChild(btn);
+        });
+      } else {
+        showResult();
+      }
+    }
 
-        function showResult() {
-            let mbti;
-            if (score < 5) mbti = "ISFJ";
-            else if (score < 10) mbti = "INFP";
-            else if (score < 15) mbti = "ENTP";
-            else mbti = "ENTJ";
+    function showResult() {
+      document.getElementById("quiz").style.display = "none";
+      resultEl.style.display = "block";
+      const avg = score / questions.length;
 
-            const texts = {
-                "ISFJ": "あなたは世界を静かに支える優しき保守者。\n秩序を愛し、他者のために尽くします。",
-                "INFP": "あなたは理想と現実の間を漂う夢想家。\n心の詩を現実に変える方法を模索しています。",
-                "ENTP": "あなたは好奇心の塊。退屈を最も嫌い、常に世界を更新し続ける挑戦者です。",
-                "ENTJ": "あなたは支配者の資質を持つ戦略家。\n混沌を嫌い、結果で世界を動かします。"
-            };
-            
-            document.getElementById('quiz').innerHTML = "";
-            document.getElementById('result').innerHTML = `🧠 あなたのタイプ: ${mbti}\n\n${texts[mbti]}`;
-        }
+      let title, color, text;
+      if (avg < 2.5) {
+        title = "あなたは冷えた夢想家（現実型NF）";
+        color = "#c4c8d1";
+        text = `
+あなたは理想を愛しながらも、現実を裏切らない冷静な観察者です。
+世界の痛みを他人事にできず、それでも自分を守る術を知っている。
+夢は見ないわけではない。だが、それを語るのが少し恥ずかしいだけ。
+あなたは静かに現実を受け入れる詩人です。`;
+      } else if (avg < 3.5) {
+        title = "あなたは現実に迷う理想主義者（揺れるNF）";
+        color = "#e6d0f5";
+        text = `
+あなたはいつも「優しさ」と「現実」の狭間で立ち尽くしている。
+他人の苦しみを感じすぎ、自分の声がかき消されていく。
+あなたの理想は尊いが、時にあなたを蝕む。
+それでもなお、あなたは信じ続ける。愛の言葉がまだ世界に通じることを。`;
+      } else if (avg < 4.5) {
+        title = "あなたは夢に生きる献身者（理想過多NF）";
+        color = "#d8b4e2";
+        text = `
+あなたは世界を救いたいと願う。たった一人で。
+愛されるより、理解されたい。理解されるより、誰かを救いたい。
+あなたの優しさは美しいが、危うい。
+その自己犠牲があなたを詩にし、同時に孤独にする。`;
+      } else {
+        title = "あなたは自己幻想の殉教者（救えないNF）";
+        color = "#b47ab1";
+        text = `
+あなたは理想の亡霊を追っている。現実を憎み、愛を神格化する。
+他人の涙を糧にして、自分の存在を確認している。
+あなたは美しい。だが、痛いほど脆い。
+このままでは、世界はあなたを優しさで殺すだろう。`;
+      }
 
-        showQuestion();
-    </script>
+      resultEl.style.background = color;
+      resultEl.innerHTML = `<h2>${title}</h2><p>${text}</p>`;
+    }
+
+    showQuestion();
+  </script>
 </body>
 </html>
