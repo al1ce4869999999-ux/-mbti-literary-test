@@ -148,23 +148,23 @@ function showResult(type, divergence) {
 
   if (warning) result += `\n\n<div class="warning">⚠️ ${warning}</div>`;
   document.getElementById("result").innerHTML = result;
+
+  // ✅ 診断結果を保存
+  saveResult(type, divergence);
 }
-</script>
-</body>
-</html>
-<script>
-// 診断結果を保存する関数
-function saveTestResult(idealGap, fantasyGap) {
+
+// ✅ 結果を保存する関数
+function saveResult(type, divergence) {
   const record = {
     date: new Date().toLocaleDateString('ja-JP'),
-    idealGap: idealGap,
-    fantasyGap: fantasyGap
+    type,
+    divergence
   };
-
-  // ローカルストレージに保存
   const history = JSON.parse(localStorage.getItem("mbti_history")) || [];
   history.push(record);
   localStorage.setItem("mbti_history", JSON.stringify(history));
   console.log("診断結果を保存しました:", record);
 }
 </script>
+</body>
+</html>
