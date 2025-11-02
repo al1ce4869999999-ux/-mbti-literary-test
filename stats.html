@@ -123,3 +123,41 @@
 </script>
 </body>
 </html>
+<script>
+// === 診断結果を保存 ===
+// 理想剥離・空想剥離などの結果が出た直後に実行する
+
+function saveResult(idealGap, fantasyGap, type) {
+  const existing = JSON.parse(localStorage.getItem("results_test")) || [];
+
+  const entry = {
+    date: new Date().toISOString().split("T")[0],
+    理想剥離: idealGap,
+    空想剥離: fantasyGap,
+    タイプ: type
+  };
+
+  existing.push(entry);
+  localStorage.setItem("results_test", JSON.stringify(existing));
+  console.log("✅ 診断結果を保存しました:", entry);
+}
+</script>
+<script>
+// === 診断結果を保存 ===
+// 理想剥離・空想剥離などの結果が出た直後に実行する
+
+function saveResult(idealGap, fantasyGap, type) {
+  const existing = JSON.parse(localStorage.getItem("results_test")) || [];
+
+  const entry = {
+    date: new Date().toISOString().split("T")[0],
+    理想剥離: idealGap,
+    空想剥離: fantasyGap,
+    タイプ: type
+  };
+
+  existing.push(entry);
+  localStorage.setItem("results_test", JSON.stringify(existing));
+  console.log("✅ 診断結果を保存しました:", entry);
+}
+</script>
