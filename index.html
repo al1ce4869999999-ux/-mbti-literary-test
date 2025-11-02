@@ -14,44 +14,59 @@
     }
     .container {
       max-width: 720px;
-      margin: 50px auto;
+      margin: 40px auto;
       background: white;
-      padding: 30px;
+      padding: 25px;
       border-radius: 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     h1 {
       text-align: center;
-      color: #444;
+      color: #3b3b3b;
+      font-size: 1.6em;
+      margin-bottom: 15px;
+    }
+    p {
+      text-align: center;
+      color: #555;
+      line-height: 1.6;
+    }
+    .question {
+      font-weight: 600;
+      font-size: 1.1em;
+      margin: 25px 0 15px 0;
+      text-align: center;
     }
     button {
       display: block;
-      width: 100%;
-      background: #6b5b95;
+      width: 90%;
+      margin: 10px auto;
+      background: linear-gradient(135deg, #8a70d6, #b28de9);
       color: white;
       border: none;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 8px;
+      padding: 16px;
+      border-radius: 10px;
       font-size: 16px;
       cursor: pointer;
-      transition: 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: all 0.25s ease;
     }
     button:hover {
-      background: #57487a;
+      transform: scale(1.03);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
     }
-    .question {
-      font-weight: 500;
-      margin-top: 25px;
+    button:active {
+      transform: scale(0.97);
+      background: linear-gradient(135deg, #7a63c0, #a37cd7);
     }
     .result {
       margin-top: 30px;
-      background: #f1eef6;
+      background: #f2eefb;
       padding: 20px;
       border-radius: 10px;
       white-space: pre-wrap;
       font-size: 15px;
-      line-height: 1.6;
+      line-height: 1.7;
     }
   </style>
 </head>
@@ -77,9 +92,6 @@
       "5. 他人を救おうとして、自分が壊れそうになることがある？"
     ];
 
-    let current = 0;
-    let score = 0;
-
     const answers = [
       { text: "まったくそう思わない", value: 1 },
       { text: "あまりそう思わない", value: 2 },
@@ -88,71 +100,66 @@
       { text: "とてもそう思う", value: 5 }
     ];
 
-    const questionEl = document.getElementById("question");
-    const optionsEl = document.getElementById("options");
-    const resultEl = document.getElementById("result");
+    let current = 0;
+    let score = 0;
 
     function showQuestion() {
+      const q = document.getElementById("question");
+      const o = document.getElementById("options");
       if (current < questions.length) {
-        questionEl.textContent = questions[current];
-        optionsEl.innerHTML = "";
+        q.textContent = questions[current];
+        o.innerHTML = "";
         answers.forEach(a => {
           const btn = document.createElement("button");
           btn.textContent = a.text;
-          btn.onclick = () => {
-            score += a.value;
-            current++;
-            showQuestion();
-          };
-          optionsEl.appendChild(btn);
+          btn.onclick = () => { score += a.value; current++; showQuestion(); };
+          o.appendChild(btn);
         });
-      } else {
-        showResult();
-      }
+      } else showResult();
     }
 
     function showResult() {
       document.getElementById("quiz").style.display = "none";
-      resultEl.style.display = "block";
+      const result = document.getElementById("result");
+      result.style.display = "block";
       const avg = score / questions.length;
-
       let title, color, text;
+
       if (avg < 2.5) {
-        title = "あなたは冷えた夢想家（現実型NF）";
-        color = "#c4c8d1";
+        title = "冷えた夢想家（現実型NF）";
+        color = "#dfe3f0";
         text = `
-あなたは理想を愛しながらも、現実を裏切らない冷静な観察者です。
+あなたは理想を愛しながらも、現実を裏切らない冷静な観察者。
 世界の痛みを他人事にできず、それでも自分を守る術を知っている。
-夢は見ないわけではない。だが、それを語るのが少し恥ずかしいだけ。
+夢は見ないわけではない。語るのが少し恥ずかしいだけ。
 あなたは静かに現実を受け入れる詩人です。`;
       } else if (avg < 3.5) {
-        title = "あなたは現実に迷う理想主義者（揺れるNF）";
-        color = "#e6d0f5";
+        title = "迷う理想主義者（揺れるNF）";
+        color = "#e8d7f7";
         text = `
-あなたはいつも「優しさ」と「現実」の狭間で立ち尽くしている。
-他人の苦しみを感じすぎ、自分の声がかき消されていく。
-あなたの理想は尊いが、時にあなたを蝕む。
-それでもなお、あなたは信じ続ける。愛の言葉がまだ世界に通じることを。`;
+「優しさ」と「現実」の狭間で立ち尽くすあなた。
+他人の苦しみを感じすぎて、自分の声がかき消える。
+理想は尊いが、時にあなたを蝕む。
+それでもあなたは信じる。まだ、愛が通じる世界を。`;
       } else if (avg < 4.5) {
-        title = "あなたは夢に生きる献身者（理想過多NF）";
-        color = "#d8b4e2";
+        title = "夢に生きる献身者（理想過多NF）";
+        color = "#d1b0f2";
         text = `
 あなたは世界を救いたいと願う。たった一人で。
-愛されるより、理解されたい。理解されるより、誰かを救いたい。
-あなたの優しさは美しいが、危うい。
-その自己犠牲があなたを詩にし、同時に孤独にする。`;
+愛されるより、理解されたい。
+その優しさがあなたを詩にし、同時に孤独にする。`;
       } else {
-        title = "あなたは自己幻想の殉教者（救えないNF）";
+        title = "自己幻想の殉教者（救えないNF）";
         color = "#b47ab1";
         text = `
-あなたは理想の亡霊を追っている。現実を憎み、愛を神格化する。
-他人の涙を糧にして、自分の存在を確認している。
-あなたは美しい。だが、痛いほど脆い。
+あなたは理想の亡霊を追っている。
+現実を憎み、愛を神格化する。
+美しい。だが、痛いほど脆い。
 このままでは、世界はあなたを優しさで殺すだろう。`;
       }
 
-      resultEl.style.background = color;
-      resultEl.innerHTML = `<h2>${title}</h2><p>${text}</p>`;
+      result.style.background = color;
+      result.innerHTML = `<h2>${title}</h2><p>${text}</p>`;
     }
 
     showQuestion();
