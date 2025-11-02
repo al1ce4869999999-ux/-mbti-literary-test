@@ -58,11 +58,11 @@ button:hover { background: #005fcc; }
   <p>あなたの“理想の人格（ペルソナ）”を文学的に描写します。<br>
      ※剥離度に応じて警告文が追加されます。</p>
 
-  <button onclick="showResult('NF', 15)">NFタイプ</button>
-  <button onclick="showResult('NP', 55)">NPタイプ</button>
-  <button onclick="showResult('NJ', 75)">NJタイプ</button>
-  <button onclick="showResult('SP', 70)">SPタイプ</button>
-  <button onclick="showResult('SJ', 85)">SJタイプ</button>
+  <button onclick="showResult('NF', 15, 30)">NFタイプ</button>
+  <button onclick="showResult('NP', 55, 40)">NPタイプ</button>
+  <button onclick="showResult('NJ', 75, 65)">NJタイプ</button>
+  <button onclick="showResult('SP', 30, 70)">SPタイプ</button>
+  <button onclick="showResult('SJ', 85, 20)">SJタイプ</button>
 
   <div id="result" class="result"></div>
 </div>
@@ -119,29 +119,28 @@ const texts = {
 ——完璧さよりも、温かさを忘れないでほしい。`
 };
 
-function showResult(type, divergence) {
-  let result = `${texts[type]}\n\n【剥離度】${divergence}%`;
+// 結果表示＋自動保存
+function showResult(type, idealGap, fantasyGap) {
+  let result = `${texts[type]}\n\n【理想剥離】${idealGap}%　【空想剥離】${fantasyGap}%`;
   let warning = "";
 
-  // 🩸 SP専用警告（4段階）
+  // 警告分岐
   if (type === "SP") {
-    if (divergence >= 80) {
+    if (idealGap >= 80 || fantasyGap >= 80) {
       warning = "※重大: 演じていることを自覚しているなら、それはもう限界に近いです。";
-    } else if (divergence >= 60) {
+    } else if (idealGap >= 60 || fantasyGap >= 60) {
       warning = "※警告: 明るさと無気力の反動が大きくなっています。休憩を予定に入れてください。";
-    } else if (divergence >= 40) {
+    } else if (idealGap >= 40 || fantasyGap >= 40) {
       warning = "※注意: 盛り上げ役を自動で引き受けない日をつくりましょう。";
     } else {
       warning = "※観察: あなたの軽さは機能しています。ときどき本音を出すだけで十分です。";
     }
-  }
-  // 🩶 他タイプ共通警告（3段階）
-  else {
-    if (divergence >= 80) {
+  } else {
+    if (idealGap >= 80 || fantasyGap >= 80) {
       warning = "あなたは理想に囚われ、現実を拒絶しつつあります。少し立ち止まって、呼吸を整えましょう。";
-    } else if (divergence >= 50) {
+    } else if (idealGap >= 50 || fantasyGap >= 50) {
       warning = "理想と現実の間に揺れています。どちらかを選ぶ必要はありません。静かに重なる点を探しましょう。";
-    } else if (divergence >= 20) {
+    } else if (idealGap >= 20 || fantasyGap >= 20) {
       warning = "わずかなズレを感じています。今のペースで、自分の声を聞き続けてください。";
     }
   }
@@ -149,21 +148,22 @@ function showResult(type, divergence) {
   if (warning) result += `\n\n<div class="warning">⚠️ ${warning}</div>`;
   document.getElementById("result").innerHTML = result;
 
-  // ✅ 診断結果を保存
-  saveResult(type, divergence);
+  // ✅ 自動で履歴保存
+  saveResult(type, idealGap, fantasyGap);
 }
 
-// ✅ 結果を保存する関数
-function saveResult(type, divergence) {
+// 履歴保存
+function saveResult(type, idealGap, fantasyGap) {
   const record = {
     date: new Date().toLocaleDateString('ja-JP'),
     type,
-    divergence
+    idealGap,
+    fantasyGap
   };
-  const history = JSON.parse(localStorage.getItem("mbti_history")) || [];
-  history.push(record);
-  localStorage.setItem("mbti_history", JSON.stringify(history));
-  console.log("診断結果を保存しました:", record);
+  const data = JSON.parse(localStorage.getItem("mbti_history") || "[]");
+  data.push(record);
+  localStorage.setItem("mbti_history", JSON.stringify(data));
+  console.log("保存完了:", record);
 }
 </script>
 </body>
