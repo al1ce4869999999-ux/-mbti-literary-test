@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>認知バランス履歴</title>
+<style>
+body {
+  font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  background: #f4f5f7;
+  color: #333;
+  margin: 0;
+  padding: 30px;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+h1 {
+  text-align: center;
+  color: #2c3e50;
+}
+canvas {
+  display: block;
+  margin: 40px auto;
+  max-width: 100%;
+}
+p {
+  text-align: center;
+  color: #666;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>📊 認知バランス履歴</h1>
+  <p>あなたの「理想剥離」と「空想剥離」の変化を可視化します。</p>
+  <canvas id="balanceChart" width="700" height="400"></canvas>
+</div>
+
+<!-- グラフ描画 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('balanceChart').getContext('2d');
+const data = {
+  labels: ['初回', '2回目', '3回目', '最新'],
+  datasets: [
+    {
+      label: '理想剥離',
+      data: [45, 50, 60, 55],
+      borderColor: '#007aff',
+      fill: false,
+      tension: 0.2
+    },
+    {
+      label: '空想剥離',
+      data: [30, 35, 40, 38],
+      borderColor: '#ff6b6b',
+      fill: false,
+      tension: 0.2
+    }
+  ]
+};
+const config = {
+  type: 'line',
+  data: data,
+  options: {
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+        title: { display: true, text: '剥離度(%)' }
+      }
+    }
+  }
+};
+new Chart(ctx, config);
+</script>
+</body>
+</html>
